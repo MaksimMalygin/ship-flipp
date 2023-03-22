@@ -15,10 +15,7 @@ import (
 //go:embed index.tmpl
 var f embed.FS
 var cfg config
-var latestStatus *easyShipStatus
 var latestPosts []tgMessage
-var latestTotalOffset int
-var latestDeliveredOffset int
 
 func main() {
 	if err := env.Parse(&cfg); err != nil {
@@ -28,14 +25,11 @@ func main() {
 	var err error
 
 	if cfg.TelegramChannel != "" {
-		latestPosts, latestTotalOffset, latestDeliveredOffset, err = getFeedPosts(cfg.TelegramChannel)
+		latestPosts, _, _, err = getFeedPosts(cfg.TelegramChannel)
 		if err != nil {
 			log.Fatalln("Telegram", err)
 		}
 	}
-
-	latestStatus.Total += latestTotalOffset
-	latestStatus.Delivered += latestDeliveredOffset
 
 	go pollData()
 
@@ -50,7 +44,7 @@ func main() {
 
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"status": latestStatus,
+			"status": nil,
 			"feed":   latestPosts,
 		})
 	})
