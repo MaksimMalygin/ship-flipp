@@ -76,13 +76,11 @@ func main() {
 func pollData() {
 	for {
 		if cfg.TelegramChannel != "" {
-			posts, totalOffset, deliveredOffset, err := getFeedPosts(cfg.TelegramChannel)
+			posts, _, _, err := getFeedPosts(cfg.TelegramChannel)
 			if err != nil {
 				log.Println("Telegram", err)
 			} else {
 				latestPosts = posts
-				latestTotalOffset = totalOffset
-				latestDeliveredOffset = deliveredOffset
 			}
 		}
 
