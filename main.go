@@ -26,10 +26,6 @@ func main() {
 	}
 
 	var err error
-	latestStatus, err = getEasyShipStatus(cfg.EasyShipWebToken, cfg.EasyShipCompanyID)
-	if err != nil {
-		log.Fatalln("Status", err)
-	}
 
 	if cfg.TelegramChannel != "" {
 		latestPosts, latestTotalOffset, latestDeliveredOffset, err = getFeedPosts(cfg.TelegramChannel)
@@ -94,16 +90,6 @@ func pollData() {
 				latestTotalOffset = totalOffset
 				latestDeliveredOffset = deliveredOffset
 			}
-		}
-
-		status, err := getEasyShipStatus(cfg.EasyShipWebToken, cfg.EasyShipCompanyID)
-		if err != nil {
-			log.Println("Status", err)
-		} else {
-			status.Total += latestTotalOffset
-			status.Delivered += latestDeliveredOffset
-			log.Println("Status", "Total:", status.Total, "Delivered:", status.Delivered)
-			latestStatus = status
 		}
 
 		time.Sleep(time.Minute * 10)
